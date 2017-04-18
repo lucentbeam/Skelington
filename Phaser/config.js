@@ -44,6 +44,21 @@ var imageData = [
     }
 ]
 
+var fontData = [
+    {
+        key: "p1-black",
+        size: 48,
+        image: "masaaki_0.png",
+        xml: "masaaki.xml"
+    },
+    {
+        key: "p1-white",
+        size: 48,
+        image: "masaaki_1.png",
+        xml: "masaaki.xml"
+    }
+]
+
 //////////////////////////////////////////////////
 //   tuning parameters
 //////////////////////////////////////////////////

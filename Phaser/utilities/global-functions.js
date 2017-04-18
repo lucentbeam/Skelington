@@ -37,3 +37,24 @@ function getSprite(key, group) {
     }
     return s;
 }
+
+function getFontData(key) {
+    for (var i = 0; i < fontData.length; i++) {
+        if (fontData[i].key === key) {
+            return fontData[i];
+        }
+    }
+    console.log("ERROR: Image data for name \""+key+"\" could not be found.");
+    return null;
+}
+
+function loadBitmapFont(key) {
+    var data = getFontData(key);
+    game.load.bitmapFont(data.key, "gfx/fonts/"+data.image, "gfx/fonts/"+data.xml);
+}
+
+function getText(key, text) {
+    var data = getFontData(key);
+    var font = game.add.bitmapText(0,0,data.key,text,data.size);
+    return font;
+}

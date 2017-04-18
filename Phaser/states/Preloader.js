@@ -26,6 +26,9 @@ BasicGame.Preloader.prototype = {
         loadImage("gameover-page");
         loadImage("play-button");
         loadSpriteSheet("player-sprite");
+        
+        loadBitmapFont("p1-white");
+        loadBitmapFont("p1-black");
 
 //		this.load.atlas('playButton', 'images/play_button.png', 'images/play_button.json');
 //		this.load.audio('titleMusic', ['audio/main_menu.mp3']);

@@ -21,6 +21,10 @@ BasicGame.MainMenu.prototype = {
         this.playButton.inputEnabled = true;
         this.playButton.events.onInputDown.add(this.startGame,this);
         
+        var t =  getText('p1-white',"sample bitmap text: p1-white");
+        t.position.setTo(size.x/2,size.y/2-50);
+        t.anchor.set(0.5);
+        
         controls.addSubscriber(this);
 
 	},

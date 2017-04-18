@@ -1,9 +1,9 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<meta charset="UTF-8" />
-	<title>Phaser Basic Project Template</title>
-	<script src="libs/phaser-ce.js"></script>
+    <meta charset="UTF-8" />
+    <title>Phaser Basic Project Template</title>
+    <script src="libs/phaser-ce.js"></script>
     <script src="utilities/inputs-manager.js"></script>
     <script src="config.js"></script>
     <script src="utilities/global-functions.js"></script>
@@ -21,15 +21,15 @@
 
 window.onload = function() {
     
-	game = new Phaser.Game(size.x, size.y, Phaser.AUTO, 'gameContainer');
+    game = new Phaser.Game(size.x, size.y, Phaser.AUTO, 'gameContainer');
 
-	game.state.add('Boot', BasicGame.Boot);
-	game.state.add('Preloader', BasicGame.Preloader);
-	game.state.add('MainMenu', BasicGame.MainMenu);
-	game.state.add('Game', BasicGame.Game);
-	game.state.add('GameOver', BasicGame.GameOver);
+    game.state.add('Boot', BasicGame.Boot);
+    game.state.add('Preloader', BasicGame.Preloader);
+    game.state.add('MainMenu', BasicGame.MainMenu);
+    game.state.add('Game', BasicGame.Game);
+    game.state.add('GameOver', BasicGame.GameOver);
 
-	game.state.start('Boot');
+    game.state.start('Boot');
 
 };
 

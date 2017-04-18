@@ -71,6 +71,7 @@ var InputManager = function() {
     this.subscribers = [];
     this.keyboard = new KeyboardManager();
     this.gamepad = new GamepadManager();
+    this.virtualpad = new VirtualPad();
     
 //    this.activeInput = 0;  // 0, 1, or 2 for keyboard, gamepad, or touch?
 };
@@ -85,8 +86,11 @@ InputManager.prototype = {
     
     update: function() {
         this.checkInvalid();
+        
         this.keyboard.update();
         this.gamepad.update();
+        this.virtualpad.update();
+        
         if (this.gamepad.buttons.updated) {
             this.runDispatches(this.gamepad);
         } else if (this.keyboard.buttons.updated) {
@@ -172,7 +176,6 @@ var GamepadManager = function() {
 GamepadManager.prototype = {
     update: function() {
         if (!game.input.gamepad.pad1.connected) {
-            console.log("WARNING: gamepad update called with pad 1 not connected (did you call gamepad.start()?)");
             return;
         }
         var x = game.input.gamepad.pad1.axis(0);
@@ -199,5 +202,28 @@ GamepadManager.prototype = {
         this.buttons.cancel = game.input.gamepad.pad1.isDown(8); // xbox select
         this.buttons.button1 = game.input.gamepad.pad1.isDown(0); // xbox a
         this.buttons.button2 = game.input.gamepad.pad1.isDown(2); // xbox x
+    }
+};
+
+var VirtualPad = function() { // TODO: allow for virtual buttons that swallow mouse presses and don't trigger the pad
+    this.pressed = false;
+    this.lastPress = new Phaser.Point(0,0);
+    this.currentPosition = new Phaser.Point(0,0);
+    this.direction = new Phaser.Point(0,0);
+};
+
+VirtualPad.prototype = {
+    update: function() {
+        if (!this.pressed && game.input.activePointer.isDown) {
+            this.pressed = true;
+            this.lastPress.x = game.input.activePointer.screenX;
+            this.lastPress.y = game.input.activePointer.screenY;
+        }
+        if (this.pressed) {
+            this.currentPosition.x = game.input.activePointer.screenX;
+            this.currentPosition.y = game.input.activePointer.screenY;
+            this.direction = Phaser.Point.subtract(this.currentPosition,this.lastPress).normalize();
+        }
+        this.pressed = game.input.activePointer.isDown;
     }
 };

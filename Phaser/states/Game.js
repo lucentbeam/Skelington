@@ -32,6 +32,7 @@ BasicGame.Game.prototype = {
         this.entities = game.add.physicsGroup();
         
         this.player = getSprite('player-sprite',this.entities);
+        
         this.player.body.setSize(32,48);
         this.player.body.offset.setTo(16,4);
         

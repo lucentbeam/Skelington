@@ -25,7 +25,7 @@ BasicGame.Preloader.prototype = {
         loadImage("title-page");
         loadImage("gameover-page");
         loadImage("play-button");
-        loadSpriteSheet("player-sprite");
+        loadImage("player-sprite");
         
         loadBitmapFont("p1-white");
         loadBitmapFont("p1-black");

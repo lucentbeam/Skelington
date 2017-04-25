@@ -15,16 +15,21 @@ function getImageData(key) {
 }
 
 function loadImage(key) {
-        game.load.image(key, 'gfx/'+getImageData(key).file);
-}
-
-function loadSpriteSheet(key) {
     var data = getImageData(key);
-    game.load.spritesheet(data.key, 'gfx/'+data.file, data.animated.width, data.animated.height);
+    if (data.animated) {
+        game.load.spritesheet(data.key, 'gfx/'+data.file, data.animated.width, data.animated.height);
+    } else {
+        game.load.image(key, 'gfx/'+data.file);
+    }
 }
 
 function getSprite(key, group) {
-    var s = group.create(0,0,key);
+    var s;
+    if (group) {
+        s = group.create(0,0,key);
+    } else {
+        s = game.add.sprite(0,0,key);
+    }
     var data = getImageData(key);
     if (data.animated) {
         for (var i = 0; i < Object.keys(data.animationCycles).length; i++) {

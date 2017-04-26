@@ -3,6 +3,9 @@ var game;
 
 var controls = new InputManager();
 
+var physicsIterations = 100;
+var dt = 0.016 / physicsIterations;
+
 // utility functions
 function getImageData(key) {
     for (var i = 0; i < imageData.length; i++) {

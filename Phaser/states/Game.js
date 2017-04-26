@@ -6,50 +6,20 @@ BasicGame.Game.prototype = {
 // EXAMPLE CODE
 /////////////////////////////////////////////////////////////
     create: function () {
-        game.physics.startSystem(Phaser.Physics.ARCADE);
         
-        game.physics.arcade.gravity.setTo(0,3000);
+        this.player = getSprite('player-sprite');
+        this.player.position.setTo(150,300);
+        this.player.anchor.set(0.5,0.5);
         
-        game.stage.backgroundColor = 0x333333;
-        this.platforms = game.add.physicsGroup();
+        this.player.body = new VerletBody(this.player);
+        this.player.collider = new CircleCollider(this.player.body,32);
         
-        var makePlatform = (x,y,w,h) => {
-            var platform = this.platforms.add(game.add.graphics());
-            platform.body.immovable = true;
-            platform.body.allowGravity = false;
-            platform.body.syncBounds = true;
-            platform.position.setTo(x,y);
-            platform.beginFill(0x606060);
-            platform.drawRect(0,0,w,h);
-            return platform
-        }
-        
-        this.p = makePlatform(0,300,300,50);
-        makePlatform(-10,size.y-50,size.x+20,100);
-        makePlatform(400,600,200,50);
-        makePlatform(800,800,200,50);
-        
-        this.entities = game.add.physicsGroup();
-        
-        this.player = getSprite('player-sprite',this.entities);
-        
-        this.player.body.setSize(32,48);
-        this.player.body.offset.setTo(16,4);
-        
-        this.player.body.collideWorldBounds = true;
-        
-        this.player.animations.play('walk',null,true);
-        
-        this.player.anchor.setTo(0.5,0.5);
-        
-        this.player.setHorizontalAxis = function(d) {
-            this.body.velocity.x = d*500;
+        this.player.setDirection = function(d) {
+            this.body.setVelocity(100*d.x, 100*d.y);
         }
         
         this.player.setButtonOne = function(v) {
-            if (v && this.body.touching.down) {
-                this.body.velocity.y = -1500;
-            }
+            
         }
         
         this.player.update = function() {
@@ -58,22 +28,36 @@ BasicGame.Game.prototype = {
             } else if (this.body.velocity.x > 0) {
                 this.scale.x = Math.abs(this.scale.x);  
             }
-            if (this.body.velocity.y <= 0) {
-                this.body.gravity.y = 0;
-            } else {
-                this.body.gravity.y = 6000;
-            }
+//            if (this.vbody.velocity.y <= 0) {
+//                this.vbody.gravity.y = 0;
+//            } else {
+//                this.vbody.gravity.y = 6000;
+//            }
+//            this.vbody.update();
         }
+        
+        this.platform = game.add.graphics(250,500);
+        this.platform.beginFill(0x303030);
+        this.platform.drawRect(-250,-10,500,20);
+        this.platform.collider = new LineCollider(this.platform, new Phaser.Point(-250, 0), new Phaser.Point(250, 0));
         
         controls.addSubscriber(this.player);
 
     },
 
     update: function () {
-
-        game.physics.arcade.collide(this.entities,this.platforms);
         
         controls.update();
+        
+        for (var i = 0; i < physicsIterations; i++)
+        {
+            this.platform.angle += 0.2/physicsIterations;
+
+            var c = this.player.collider.collides(this.platform.collider);
+            if (c) {
+                this.player.body.moveBy(c.direction.x*c.distance, c.direction.y*c.distance, true);
+            }
+        }
         
         if (game.input.activePointer.isDown) {
             this.gameOver();
@@ -82,7 +66,7 @@ BasicGame.Game.prototype = {
     },
     
     render: function() {
-        game.debug.body(this.player);
+        
     },
 /////////////////////////////////////////////////////////////
 // END EXAMPLE CODE

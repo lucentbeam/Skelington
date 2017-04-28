@@ -7,41 +7,35 @@ BasicGame.Game.prototype = {
 /////////////////////////////////////////////////////////////
     create: function () {
         
-        this.player = getSprite('player-sprite');
-        this.player.position.setTo(150,300);
-        this.player.anchor.set(0.5,0.5);
+        Physics.createGroup('balls');
+        Physics.createGroup('flippers');
         
-        this.player.body = new VerletBody(this.player);
-        this.player.collider = new CircleCollider(this.player.body,32);
+        this.ball = game.add.graphics();
+        this.ball.beginFill(0xAAAAAA);
+        this.ball.drawCircle(0,0,50);
+        this.ball.position.setTo(300,300);
+        this.ball.anchor.set(0.5,0.5);
         
-        this.player.setDirection = function(d) {
-            this.body.setVelocity(100*d.x, 100*d.y);
+        attachCircleBody(this.ball, 'balls', 32);
+        this.ball.body.gravity = new Phaser.Point(0,900);
+        
+        this.flipper = game.add.graphics(250,500);
+        this.flipper.beginFill(0x303030);
+        this.flipper.drawRect(0,-10,500,20);
+        attachLineBody(this.flipper, 'flippers', new Phaser.Point(0, 0), new Phaser.Point(500, 0));
+        this.flipper.up = false;
+        
+        this.flipper.setButtonOne = function(v) {
+            this.up = v;
         }
         
-        this.player.setButtonOne = function(v) {
-            
+        this.flipper.updateRotation = function() {
+            var targetRot = this.up ? -45 * degToRad : 30 * degToRad;
+            var factor = 0.35/physicsIterations;
+            this.body.rotation = this.body.rotation*(1-factor) + targetRot * factor;
         }
         
-        this.player.update = function() {
-            if (this.body.velocity.x < 0) {
-                this.scale.x = -1*Math.abs(this.scale.x);
-            } else if (this.body.velocity.x > 0) {
-                this.scale.x = Math.abs(this.scale.x);  
-            }
-//            if (this.vbody.velocity.y <= 0) {
-//                this.vbody.gravity.y = 0;
-//            } else {
-//                this.vbody.gravity.y = 6000;
-//            }
-//            this.vbody.update();
-        }
-        
-        this.platform = game.add.graphics(250,500);
-        this.platform.beginFill(0x303030);
-        this.platform.drawRect(-250,-10,500,20);
-        this.platform.collider = new LineCollider(this.platform, new Phaser.Point(-250, 0), new Phaser.Point(250, 0));
-        
-        controls.addSubscriber(this.player);
+        controls.addSubscriber(this.flipper);
 
     },
 
@@ -51,12 +45,15 @@ BasicGame.Game.prototype = {
         
         for (var i = 0; i < physicsIterations; i++)
         {
-            this.platform.angle += 0.2/physicsIterations;
+            this.flipper.updateRotation();
+            
+            this.ball.body.update();
+            this.flipper.body.update();
 
-            var c = this.player.collider.collides(this.platform.collider);
-            if (c) {
-                this.player.body.moveBy(c.direction.x*c.distance, c.direction.y*c.distance, true);
-            }
+            Physics.collideGroups('balls', 'flippers', function(ball, flipper, collision) {
+                ball.body.moveBy(collision.direction.x*collision.distance, collision.direction.y*collision.distance, false);
+                ball.body.reflectVelocityToDirection(collision.direction, 0.5);
+            });
         }
         
         if (game.input.activePointer.isDown) {

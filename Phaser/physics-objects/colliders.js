@@ -36,8 +36,8 @@ CircleCollider.prototype = {
     },
     
     getCollisionWithCircle: function(circle) {
-        var threshold = other.radius + this.radius;
-        var direction = new Phaser.Point(this.x-other.x,this.y-other.y);
+        var threshold = circle.radius + this.radius;
+        var direction = new Phaser.Point(this.x-circle.x,this.y-circle.y);
         var distance = direction.getMagnitude();
         if (distance < threshold) {
             direction.normalize();

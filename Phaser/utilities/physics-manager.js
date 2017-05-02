@@ -15,6 +15,10 @@ function attachLineBody(target, group, pt1, pt2)
 var Physics = {
     groups: { },
     
+    defaultProperties: {
+        restitution: 0.8
+    }, // add this as a per group basis?
+    
     createGroup: function(name) {
         if (this.groups.hasOwnProperty(name)) {
             console.log("INFO: (create group) physics group "+name+" already exists.");
@@ -28,6 +32,7 @@ var Physics = {
             console.log("WARNING: (add to group) physics group "+group+" does not exist.");
         } else {
             this.groups[group].push(target);
+            target.restitution = this.defaultProperties.restitution;
         }
     },
     
@@ -69,7 +74,8 @@ var Physics = {
             console.log("WARNING: (update) physics group "+group+" does not exist.");
         } else {
             for (var i = 0; i < this.groups[group].length; i++) {
-                this.groups[group].body.update();
+                this.groups[group][i].update();
+                this.groups[group][i].body.update();
             }
         }
     }

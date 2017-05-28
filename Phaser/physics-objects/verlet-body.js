@@ -14,7 +14,9 @@ VerletBody.prototype = {
     },
     
     get friction() {
-        return 0;
+        var speed = this.velocity.getMagnitude();
+        var velocityScale = 500;
+        return  0.01*Math.min(speed/velocityScale, 1.0)/physicsIterations;
     },
     
     destroy: function() {},
@@ -35,7 +37,7 @@ VerletBody.prototype = {
     
     postUpdate: function() {},
     
-    setVelocity: function(x,y) {
+    setVelocity: function(x, y) {
         this.velocity = new Phaser.Point(x, y);
         this.lastPosition.x = this.position.x - x*dt;
         this.lastPosition.y = this.position.y - y*dt;

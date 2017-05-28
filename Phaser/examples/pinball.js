@@ -39,7 +39,7 @@ function makeBumper(x, y) {
 }
 
 function makeFlipper(x, y, left) { 
-    var len = 300;
+    var len = 200;
     var offset = left ? len : -len;
     var flipper = makeWall(x, y, x+offset, y);
     flipper.up = false;
